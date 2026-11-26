@@ -1,0 +1,294 @@
+/* ==========================================================================
+   words.css — 单词背诵模块样式
+   ========================================================================== */
+
+/* ---------- 顶部工具区 ---------- */
+.words-toolbar {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.words-toolbar__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.words-count {
+  font-family: var(--font-num);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.words-reset {
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.words-reset:active {
+  color: var(--color-danger);
+}
+
+.words-mastery {
+  margin-top: var(--space-2);
+}
+
+/* ---------- 标签筛选 chips ---------- */
+.words-filters {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.words-filters::-webkit-scrollbar {
+  display: none;
+}
+
+/* .chip 基础样式已统一在 components.css 中 */
+
+/* ---------- 卡片（3D 翻转） ---------- */
+.flashcard {
+  margin-top: var(--space-4);
+  height: 300px;
+  perspective: 1200px;
+  cursor: pointer;
+  outline: none;
+}
+
+.flashcard__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0.1, 0.2, 1);
+}
+
+.flashcard.is-flipped .flashcard__inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard__face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow-y: auto;
+}
+
+.flashcard__face--back {
+  transform: rotateY(180deg);
+  justify-content: center;
+  align-items: stretch;
+  text-align: left;
+  padding-bottom: 64px;
+  background: linear-gradient(160deg, var(--color-surface), var(--color-primary-soft));
+}
+
+.flashcard:focus-visible .flashcard__face {
+  border-color: var(--color-primary);
+}
+
+/* 标签 */
+.flashcard__tag {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  padding: 2px var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+}
+
+.flashcard__face--back .flashcard__tag {
+  background: var(--color-surface);
+}
+
+/* 正面内容 */
+.flashcard__word {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 2.25rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  color: var(--color-text);
+  word-break: break-word;
+}
+
+.flashcard__word--sm {
+  font-size: 1.5rem;
+  color: var(--color-text-soft);
+}
+
+.flashcard__phonetic {
+  font-family: var(--font-num);
+  font-size: var(--fs-base);
+  color: var(--color-text-muted);
+}
+
+.flashcard__hint {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 0;
+  right: 0;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+/* 背面内容 */
+.flashcard__meaning {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+.flashcard__example {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: var(--fs-base);
+  font-style: italic;
+  line-height: 1.6;
+  color: var(--color-text-soft);
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-border);
+}
+
+.flashcard__level {
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* 熟悉度小圆点 */
+.dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.dots__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  transition: background var(--transition-fast);
+}
+
+.dots__dot.is-on {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ---------- 三个评价按钮 ---------- */
+.words-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.words-btn {
+  position: relative;
+  min-height: 52px;
+  font-size: var(--fs-base);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.words-btn:active {
+  transform: scale(0.97);
+}
+
+.words-btn__hint {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+.words-btn--know {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.words-btn--know .words-btn__hint {
+  color: color-mix(in srgb, var(--color-on-primary) 70%, transparent);
+}
+
+.words-btn--vague {
+  color: var(--color-warning);
+  border-color: color-mix(in srgb, var(--color-warning) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-warning) 10%, var(--color-surface));
+}
+
+.words-btn--unknown {
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+}
+
+/* ---------- 本轮完成面板 ---------- */
+.words-done {
+  margin-top: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  animation: view-in var(--transition-base) both;
+}
+
+.words-done__icon {
+  font-size: 2rem;
+}
+
+.words-done__title {
+  margin-top: var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.words-done__desc {
+  margin-top: var(--space-1);
+}
+
+/* ---------- 桌面端：卡片稍高一点 ---------- */
+@media (min-width: 420px) {
+  .flashcard {
+    height: 320px;
+  }
+}

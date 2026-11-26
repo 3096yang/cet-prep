@@ -1,0 +1,315 @@
+/* ==========================================================================
+   wrongbook.css — 错题本模块样式（重做模式复用 practice.css 的 pq-* 组件）
+   ========================================================================== */
+
+/* ---------- 顶部统计 ---------- */
+.wb-head {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.wb-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.wb-stat__num {
+  display: block;
+  font-family: var(--font-num);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.wb-stat__label {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+/* 待复习数高亮 */
+.wb-stat--due .wb-stat__num {
+  color: var(--color-warning);
+}
+
+.wb-stat--done .wb-stat__num {
+  color: var(--color-success);
+}
+
+/* ---------- 错题列表 ---------- */
+.wb-list {
+  margin-top: var(--space-4);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.wb-item {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.wb-item.is-mastered {
+  border-color: color-mix(in srgb, var(--color-success) 40%, var(--color-border));
+}
+
+/* 头部（点击展开） */
+.wb-item__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+
+.wb-item__tag {
+  flex-shrink: 0;
+  margin-top: 2px;
+  padding: 1px var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+}
+
+.wb-item__title {
+  flex: 1;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-text);
+  /* 摘要两行截断 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wb-item__count {
+  flex-shrink: 0;
+  padding: 1px var(--space-2);
+  font-family: var(--font-num);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  border-radius: var(--radius-full);
+}
+
+.wb-item__arrow {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.wb-item.is-open .wb-item__arrow {
+  transform: rotate(180deg);
+}
+
+/* 折叠时也显示的“我的答案 / 正确答案” */
+.wb-item__summary {
+  padding: 0 var(--space-4) var(--space-3);
+  display: grid;
+  gap: 2px;
+}
+
+.wb-item__line {
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--color-text-soft);
+}
+
+.wb-item__line::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: var(--space-1);
+  border-radius: 50%;
+  vertical-align: 1px;
+}
+
+.wb-item__line--wrong::before { background: var(--color-danger); }
+.wb-item__line--right::before { background: var(--color-success); }
+
+/* 展开区 */
+.wb-item__body {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px dashed var(--color-border);
+  animation: view-in var(--transition-fast) both;
+}
+
+.wb-item__passage {
+  margin-bottom: var(--space-3);
+  padding: var(--space-3);
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: var(--fs-xs);
+  line-height: 1.8;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.wb-item__question {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.6;
+  margin-bottom: var(--space-2);
+}
+
+/* 只读选项 */
+.wb-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-1);
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--color-text-soft);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.wb-opt__key {
+  flex-shrink: 0;
+  font-family: var(--font-num);
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.wb-opt.is-correct {
+  color: var(--color-text);
+  border-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+}
+
+.wb-opt.is-correct .wb-opt__key { color: var(--color-success); }
+
+.wb-opt.is-wrong {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+}
+
+.wb-opt.is-wrong .wb-opt__key { color: var(--color-danger); }
+
+/* 解析 */
+.wb-item__analysis {
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  font-size: var(--fs-xs);
+  line-height: 1.8;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-sm);
+}
+
+/* 复习进度 / 操作 */
+.wb-item__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+.wb-item__meta .dots {
+  vertical-align: middle;
+}
+
+.wb-item__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.wb-item__actions .btn {
+  flex: 1;
+}
+
+/* ---------- 首页「今日待复习」卡片 ---------- */
+.home-review {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.home-review__text {
+  flex: 1;
+}
+
+.home-review__title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.home-review__num {
+  font-family: var(--font-num);
+  font-weight: 700;
+  color: var(--color-warning);
+}
+
+.home-review .btn {
+  flex-shrink: 0;
+}
+
+/* ---------- 复习模式 ---------- */
+.wb-review {
+  margin-top: var(--space-2);
+}
+
+.wb-review .pq-head {
+  margin-bottom: var(--space-4);
+}
+
+.wb-quit {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* 复习结算 */
+.wb-done {
+  margin-top: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  animation: view-in var(--transition-base) both;
+}
+
+.wb-done__icon {
+  font-size: 2rem;
+}
+
+.wb-done__title {
+  margin-top: var(--space-1);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.wb-done__desc {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
+}

@@ -1,0 +1,223 @@
+/* ==========================================================================
+   stats.css — 学习统计模块样式（大数字 / 今日三宫格 / 打卡 / 柱状图 / 雷达图）
+   ========================================================================== */
+
+/* ---------- 距考大数字 ---------- */
+.st-hero {
+  padding: var(--space-5);
+  text-align: center;
+  color: #ffffff;
+  background: var(--gradient-hero);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-hero);
+}
+
+.st-hero__label {
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.st-hero__num {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.st-hero__num > span:first-child {
+  font-family: var(--font-num);
+  font-size: 3.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.st-hero__unit {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.st-hero__sub {
+  margin-top: var(--space-2);
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ---------- 今日三宫格 ---------- */
+.st-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.st-tile {
+  padding: var(--space-3) var(--space-2);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.st-tile__num {
+  display: block;
+  font-family: var(--font-num);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.st-tile__label {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+/* ---------- 连续打卡 ---------- */
+.st-streak {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.st-streak__title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.st-streak__num {
+  font-family: var(--font-num);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  color: var(--color-primary-strong);
+  line-height: 1;
+}
+
+.st-streak__num span:first-child {
+  font-size: inherit;
+}
+
+.st-streak__unit {
+  margin-left: 2px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
+/* ---------- 柱状图（纯 CSS） ---------- */
+.st-chart {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+  align-items: end;
+  margin-top: var(--space-4);
+  height: 168px;
+}
+
+.st-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.st-bar__value {
+  font-family: var(--font-num);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-text-soft);
+  line-height: 1.4;
+  min-height: 1.4em;
+}
+
+.st-bar__track {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: linear-gradient(to top, var(--color-surface-2) 0%, transparent 85%);
+  border-radius: var(--radius-sm);
+}
+
+.st-bar__stack {
+  width: 60%;
+  min-width: 14px;
+  max-width: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: height var(--transition-base);
+}
+
+.st-bar__seg {
+  width: 100%;
+}
+
+.st-bar__seg--quiz {
+  background: var(--color-accent);
+}
+
+.st-bar__seg--word {
+  background: var(--color-primary);
+}
+
+.st-bar__label {
+  margin-top: var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.st-bar.is-today .st-bar__label {
+  color: var(--color-primary-strong);
+  font-weight: 600;
+}
+
+/* 图例 */
+.st-legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.st-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--fs-xs);
+  color: var(--color-text-soft);
+}
+
+.st-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.st-dot--word { background: var(--color-primary); }
+.st-dot--quiz { background: var(--color-accent); }
+
+/* ---------- 雷达图 ---------- */
+.st-radar {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-3);
+}
+
+.st-radar canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- 工具 ---------- */

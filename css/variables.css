@@ -1,0 +1,122 @@
+/* ==========================================================================
+   variables.css — 设计令牌（Design Tokens）
+   --------------------------------------------------------------------------
+   浅色 / 深色两套：组件只引用变量，切主题时不需要动任何组件样式。
+     主色 #4A90D9 · 背景 #F7F8FA · 卡片 #FFFFFF · 圆角 12px · 正文 16px / 1.6
+   切换方式：document.documentElement.setAttribute('data-theme', 'dark')
+   ========================================================================== */
+
+/* ========================= 浅色（默认） ========================= */
+:root {
+  color-scheme: light;
+
+  /* ---------- 品牌色 ---------- */
+  --color-primary: #4a90d9;         /* 主色：主按钮、选中态、进度 */
+  --color-primary-strong: #3579bd;  /* 加深：按下态、强调文字 */
+  --color-primary-soft: #e8f1fb;    /* 浅底：标签、图标底、进度槽 */
+  --color-on-primary: #ffffff;      /* 主色上的文字 */
+
+  /* ---------- 中性色 ---------- */
+  --color-bg: #f7f8fa;              /* 页面底色 */
+  --color-surface: #ffffff;         /* 卡片 / 顶栏 / 导航 */
+  --color-surface-2: #f0f2f5;       /* 次级填充：输入框、代码块、图表槽 */
+  --color-border: #e6e9ef;          /* 描边 */
+  --color-text: #1f2733;            /* 主文字 */
+  --color-text-soft: #5b6675;       /* 次要文字 */
+  --color-text-muted: #98a2b3;      /* 弱化文字 */
+
+  /* ---------- 语义色 ---------- */
+  --color-success: #2fa36b;
+  --color-warning: #e89a1c;
+  --color-danger: #e05252;
+  --color-info: #4a90d9;
+  --color-accent: #f2994a;          /* 图表第二色（做题柱） */
+
+  /* ---------- 字体 ---------- */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    sans-serif;
+  --font-num: "SF Mono", "DIN Alternate", Consolas, "Courier New", monospace;
+
+  --fs-xs: 0.75rem;      /* 12 */
+  --fs-sm: 0.8125rem;    /* 13 */
+  --fs-base: 1rem;       /* 16 正文 */
+  --fs-md: 1.125rem;     /* 18 */
+  --fs-lg: 1.375rem;     /* 22 */
+  --fs-xl: 2rem;         /* 32 */
+  --lh-base: 1.6;
+
+  /* ---------- 间距 ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* ---------- 圆角（卡片统一 12px） ---------- */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-card: 12px;
+  --radius-lg: 12px;      /* 兼容旧引用，等同卡片圆角 */
+  --radius-full: 999px;
+
+  /* ---------- 阴影（轻微、贴地） ---------- */
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --shadow-hover: 0 4px 12px rgba(16, 24, 40, 0.08);
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: var(--shadow-card);
+  --shadow-up: 0 -1px 8px rgba(16, 24, 40, 0.05);
+
+  /* ---------- 渐变（倒计时 / 统计大卡片） ---------- */
+  --gradient-hero: linear-gradient(135deg, #5a9ee4 0%, #4a90d9 45%, #3a7cc4 100%);
+  --shadow-hero: 0 6px 18px rgba(74, 144, 217, 0.24);
+
+  /* ---------- 尺寸 / 层级 ---------- */
+  --layout-max: 480px;
+  --header-h: 56px;
+  --tabbar-h: 58px;
+  --z-header: 10;
+  --z-tabbar: 20;
+
+  /* ---------- 动效 ---------- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 0.16s var(--ease);
+  --transition-base: 0.24s var(--ease);
+  --tap-scale: 0.97;      /* 按钮 / 图标点击缩放 */
+  --tap-scale-card: 0.99; /* 卡片点击缩放（更轻微） */
+}
+
+/* ========================= 深色 ========================= */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-primary: #5ea7ec;
+  --color-primary-strong: #8cc3f2;
+  --color-primary-soft: #16324a;
+  --color-on-primary: #0b1a26;   /* 浅蓝底上用深色字，对比度更够 */
+
+  --color-bg: #12161c;
+  --color-surface: #1a2028;
+  --color-surface-2: #232b35;
+  --color-border: #2c3541;
+  --color-text: #e8edf3;
+  --color-text-soft: #a7b2c0;
+  --color-text-muted: #75808f;
+
+  --color-success: #4cc38a;
+  --color-warning: #f0b054;
+  --color-danger: #f07a63;
+  --color-info: #5ea7ec;
+  --color-accent: #f2a45c;
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-up: 0 -1px 8px rgba(0, 0, 0, 0.4);
+
+  --gradient-hero: linear-gradient(135deg, #2f6da8 0%, #2a5f92 50%, #224e79 100%);
+  --shadow-hero: 0 6px 18px rgba(0, 0, 0, 0.45);
+}

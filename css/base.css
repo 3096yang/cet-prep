@@ -1,0 +1,341 @@
+/* ==========================================================================
+   base.css — 重置 + 应用骨架
+   顶栏（含主题切换）/ 内容区 / 底部 5 项导航 / 视图淡入 / 点击缩放反馈
+   ========================================================================== */
+
+/* ---------- 重置 ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+h1, h2, h3, h4, p, ul, ol, figure {
+  margin: 0;
+}
+
+ul, ol {
+  padding: 0;
+  list-style: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* hidden 必须能覆盖组件的 display（.btn / .words-actions 等是 flex/grid） */
+[hidden] {
+  display: none !important;
+}
+
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- 页面基础：系统字体栈 / 16px / 1.6 ---------- */
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  color: var(--color-text);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* 桌面端：居中收窄成手机尺寸 */
+@media (min-width: 600px) {
+  body {
+    background: var(--color-surface-2);
+  }
+}
+
+/* ---------- 应用外壳 ---------- */
+.app {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  max-width: var(--layout-max);
+  margin: 0 auto;
+  background: var(--color-bg);
+  transition: background-color var(--transition-base);
+}
+
+@media (min-width: 600px) {
+  .app {
+    box-shadow: 0 0 40px rgba(16, 24, 40, 0.06);
+  }
+}
+
+/* ---------- 顶部栏 ---------- */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  padding-top: env(safe-area-inset-top);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.app-header__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  height: var(--header-h);
+  padding: 0 var(--space-4);
+}
+
+.app-header__title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-header__badge {
+  flex-shrink: 0;
+  padding: 2px var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+}
+
+/* ---------- 主题切换按钮（月亮 / 太阳随主题切换） ---------- */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.theme-toggle:active {
+  transform: scale(0.9);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.theme-toggle__sun {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle__moon {
+  display: none;
+}
+
+[data-theme="dark"] .theme-toggle__sun {
+  display: block;
+}
+
+/* ---------- 主内容区 ---------- */
+.app-main {
+  flex: 1;
+  padding: var(--space-4);
+  padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + var(--space-6));
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- 视图切换：淡入 + 轻微上浮 ---------- */
+.view {
+  display: none;
+}
+
+.view.is-active {
+  display: block;
+  animation: view-fade-in var(--transition-base) var(--ease) both;
+}
+
+@keyframes view-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- 底部固定导航：5 个图标 + 文字 ---------- */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-tabbar);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  max-width: var(--layout-max);
+  margin: 0 auto;
+  height: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  box-shadow: var(--shadow-up);
+}
+
+.tabbar__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 0.6875rem; /* 11px，导航文字 */
+  line-height: 1.2;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.tabbar__item:active {
+  transform: scale(0.94);
+}
+
+.tabbar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+
+/* 导航图标：统一 22px、线性、圆端点 */
+.tabbar__icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-width var(--transition-fast), transform var(--transition-fast);
+}
+
+/* 选中态：图标底色 + 主色文字 + 线条加粗 */
+.tabbar__item.is-active {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.tabbar__item.is-active .tabbar__icon {
+  background: var(--color-primary-soft);
+  transform: translateY(-1px);
+}
+
+.tabbar__item.is-active .tabbar__icon svg {
+  stroke-width: 2.15;
+}
+
+/* ---------- 点击缩放反馈 ---------- */
+/* 卡片类：整块可点（单词卡、错题条目、通用卡片） */
+.card,
+.wb-item,
+.flashcard,
+.st-tile,
+.pq-head,
+.words-toolbar {
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  will-change: transform;
+}
+
+.card:active,
+.wb-item:active,
+.flashcard:active,
+.st-tile:active,
+.pq-head:active,
+.words-toolbar:active {
+  transform: scale(var(--tap-scale-card));
+}
+
+/* 按钮类：反馈更明显一点 */
+.btn,
+.chip,
+.pq-option,
+.words-btn,
+.tabbar__item,
+.theme-toggle {
+  transition: transform var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btn:active,
+.chip:active,
+.pq-option:active,
+.words-btn:active {
+  transform: scale(var(--tap-scale));
+}
+
+/* 桌面端：卡片悬浮加深阴影（不影响手机） */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover,
+  .wb-item:hover,
+  .st-tile:hover {
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+/* ---------- 无障碍 ---------- */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

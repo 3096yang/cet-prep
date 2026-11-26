@@ -1,0 +1,169 @@
+/* ==========================================================================
+   components.css — 通用组件（只引用变量，自动跟随浅色 / 深色）
+   ========================================================================== */
+
+/* ---------- 卡片：白底、12px 圆角、轻微阴影 ---------- */
+.card {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.card + .card {
+  margin-top: var(--space-3);
+}
+
+.card__title {
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+/* 卡片内副标题 */
+.card__desc {
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;               /* 移动端可点区域 */
+  padding: 0 var(--space-5);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-md);
+  transition: transform var(--transition-fast), background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.btn:active {
+  transform: scale(var(--tap-scale));
+  background: var(--color-primary-strong);
+}
+
+/* 次级按钮 */
+.btn--ghost {
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+}
+
+.btn--ghost:active {
+  background: var(--color-primary-soft);
+  filter: brightness(0.96);
+}
+
+/* 危险操作 */
+.btn--danger {
+  color: var(--color-on-primary);
+  background: var(--color-danger);
+}
+
+.btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.btn--sm {
+  min-height: 36px;
+  padding: 0 var(--space-4);
+  font-size: var(--fs-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* ---------- 筛选块（chips） ---------- */
+.chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition: color var(--transition-fast), background var(--transition-fast),
+    border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.chip.is-active {
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* ---------- 标签 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-primary-strong);
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+}
+
+.tag--success {
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 14%, transparent);
+}
+
+.tag--warn {
+  color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+}
+
+.tag--danger {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 16%, transparent);
+}
+
+/* ---------- 进度条 ---------- */
+.progress {
+  height: 6px;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  width: 0;
+  background: var(--color-primary);
+  border-radius: inherit;
+  transition: width var(--transition-base);
+}
+
+/* ---------- 空状态 ---------- */
+.empty-state {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.empty-state__icon {
+  margin-bottom: var(--space-2);
+  font-size: 2rem;
+}
+
+/* ---------- 工具类 ---------- */
+.text-soft { color: var(--color-text-soft); }
+.text-muted { color: var(--color-text-muted); }
+.text-sm { font-size: var(--fs-sm); }
+.text-center { text-align: center; }
+.mt-1 { margin-top: var(--space-1); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.stack > * + * { margin-top: var(--space-3); }

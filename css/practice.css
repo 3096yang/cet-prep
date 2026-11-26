@@ -1,0 +1,273 @@
+/* ==========================================================================
+   practice.css — 真题练习模块样式
+   ========================================================================== */
+
+/* ---------- 顶部进度 ---------- */
+.pq-head {
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pq-head__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.pq-count {
+  font-family: var(--font-num);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.pq-hit {
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
+}
+
+/* ---------- 题目卡片 ---------- */
+.pq-card {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.pq-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.pq-year {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+}
+
+/* 阅读原文 */
+.pq-passage {
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: var(--fs-sm);
+  line-height: 1.85;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+}
+
+.pq-question {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+/* ---------- 选项 ---------- */
+.pq-options {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.pq-option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-fast), background var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.pq-option:active {
+  transform: scale(0.99);
+}
+
+/* 选项字母 */
+.pq-option__key {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-family: var(--font-num);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--color-text-soft);
+  background: var(--color-surface-2);
+  border-radius: 50%;
+}
+
+/* 已作答：禁止再点 */
+.pq-options.is-locked .pq-option {
+  cursor: default;
+}
+
+/* 正确项 */
+.pq-option.is-correct {
+  border-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+}
+
+.pq-option.is-correct .pq-option__key {
+  color: #fff;
+  background: var(--color-success);
+}
+
+/* 选错项 */
+.pq-option.is-wrong {
+  border-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+}
+
+.pq-option.is-wrong .pq-option__key {
+  color: #fff;
+  background: var(--color-danger);
+}
+
+/* 未选中的选项在作答后弱化 */
+.pq-options.is-locked .pq-option:not(.is-correct):not(.is-wrong) {
+  opacity: 0.65;
+}
+
+/* 判断题图标 */
+.pq-option__mark {
+  margin-left: auto;
+  font-size: var(--fs-base);
+  font-weight: 700;
+}
+
+.pq-option.is-correct .pq-option__mark { color: var(--color-success); }
+.pq-option.is-wrong .pq-option__mark { color: var(--color-danger); }
+
+/* ---------- 解析区 ---------- */
+.pq-analysis {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-2);
+  border-left: 3px solid var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  animation: view-in var(--transition-base) both;
+}
+
+.pq-analysis.is-correct {
+  border-left-color: var(--color-success);
+}
+
+.pq-analysis.is-wrong {
+  border-left-color: var(--color-danger);
+}
+
+.pq-verdict {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  margin-bottom: var(--space-1);
+}
+
+.pq-analysis.is-correct .pq-verdict { color: var(--color-success); }
+.pq-analysis.is-wrong .pq-verdict { color: var(--color-danger); }
+
+.pq-answerline {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.pq-analysis__text {
+  font-size: var(--fs-sm);
+  line-height: 1.75;
+  color: var(--color-text-soft);
+}
+
+/* ---------- 成绩面板 ---------- */
+.pq-summary {
+  margin-top: var(--space-4);
+  padding: var(--space-6) var(--space-5);
+  text-align: center;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  animation: view-in var(--transition-base) both;
+}
+
+.pq-summary__icon {
+  font-size: 2rem;
+}
+
+.pq-summary__score {
+  margin-top: var(--space-1);
+  font-family: var(--font-num);
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pq-summary__slash {
+  margin: 0 var(--space-1);
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.pq-summary__rate {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--color-text-soft);
+}
+
+.pq-summary__meta {
+  margin-top: var(--space-2);
+}
+
+/* 错题清单 */
+.pq-wronglist {
+  margin-top: var(--space-4);
+  text-align: left;
+}
+
+.pq-wronglist__item {
+  padding: var(--space-3);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+
+.pq-wronglist__item + .pq-wronglist__item {
+  margin-top: var(--space-2);
+}
+
+.pq-wronglist__no {
+  display: inline-block;
+  margin-right: var(--space-1);
+  font-family: var(--font-num);
+  font-weight: 700;
+  color: var(--color-danger);
+}
+
+.pq-wronglist__ans {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--fs-xs);
+  color: var(--color-success);
+}
