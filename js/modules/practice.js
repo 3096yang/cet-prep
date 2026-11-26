@@ -13,6 +13,8 @@
 
   var WRONG_KEY = 'wrongbook';
   var HISTORY_KEY = 'practice:history';
+  var SESSION_KEY = 'practice:session';        // 本轮题组快照（刷新后续做）
+  var SESSION_TTL = 3 * 24 * 60 * 60 * 1000;   // 超过 3 天的旧进度丢弃
   var LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
 
   /** 运行期状态 */
@@ -22,7 +24,8 @@
     marks: [],       // 与 list 平行：[{ choice, correct }] 或 null
     startedAt: 0,
     started: false,
-    locked: false    // 当前题是否已作答
+    locked: false,   // 当前题是否已作答
+    finished: false  // 本轮是否已结算（防重复记历史）
   };
 
   var el = {};
@@ -92,6 +95,66 @@
     global.Store.set(WRONG_KEY, map);
   }
 
+  /* ---------------- 本轮会话（刷新续做） ---------------- */
+
+  function saveSession() {
+    if (!state.started || state.finished) return;
+    global.Store.set(SESSION_KEY, {
+      ids: state.list.map(function (q) { return q.id; }),
+      index: state.index,
+      marks: state.marks,
+      mode: state.mode || 'all',
+      startedAt: state.startedAt,
+      savedAt: Date.now()
+    });
+  }
+
+  function clearSession() {
+    global.Store.remove(SESSION_KEY);
+  }
+
+  /**
+   * 读取上次的题组进度
+   * 目标：题号、已作答标记（选项着色靠它）全部原样恢复
+   */
+  function loadSession() {
+    var saved = global.Store.get(SESSION_KEY, null);
+    if (!saved || !Array.isArray(saved.ids) || !saved.savedAt) return null;
+
+    if (Date.now() - saved.savedAt > SESSION_TTL) {
+      clearSession();
+      return null;
+    }
+
+    var list = [];
+    var marks = [];
+    saved.ids.forEach(function (id, i) {
+      var q = byId(id);                      // 题库变了就跳过这道
+      if (q) {
+        list.push(q);
+        marks.push(saved.marks && saved.marks[i] ? saved.marks[i] : null);
+      }
+    });
+    if (!list.length) {
+      clearSession();
+      return null;
+    }
+
+    var index = Math.min(saved.index || 0, list.length);
+    // 恢复点之后找第一道未作答的题（删题导致错位时也能对上）
+    while (index < list.length - 1 && marks[index]) index += 1;
+    // 全部已作答 → 直接回结算页
+    if (index < list.length && marks[index]) index = list.length;
+
+    return {
+      list: list,
+      marks: marks,
+      index: index,
+      mode: saved.mode || 'all',
+      startedAt: saved.startedAt || Date.now()
+    };
+  }
+
   /* ---------------- 会话控制 ---------------- */
 
   function startSession(list, mode) {
@@ -101,11 +164,35 @@
     state.startedAt = Date.now();
     state.started = true;
     state.locked = false;
+    state.finished = false;
     state.mode = mode || 'all';
 
     el.summary.hidden = true;
     el.card.hidden = false;
     el.head.hidden = false;
+    saveSession();
+    renderQuestion();
+  }
+
+  /** 从会话快照恢复 */
+  function restoreSession(saved) {
+    state.list = saved.list;
+    state.marks = saved.marks;
+    state.index = saved.index;
+    state.mode = saved.mode;
+    state.startedAt = saved.startedAt;
+    state.started = true;
+    state.locked = false;
+    state.finished = false;
+
+    el.summary.hidden = true;
+    el.card.hidden = false;
+    el.head.hidden = false;
+
+    if (saved.index >= saved.list.length) {
+      finish({ skipHistory: true });   // 上次已答完但没看成绩：只重建面板
+      return;
+    }
     renderQuestion();
   }
 
@@ -243,9 +330,10 @@
       global.Daily.addSection(q.section, correct);
     }
 
-    // 5) 显示下一题
+    // 4) 显示下一题
     el.next.hidden = false;
     updateHead();
+    saveSession();
   }
 
   function makeMark(symbol) {
@@ -264,12 +352,18 @@
     }
     state.index += 1;
     renderQuestion();
+    saveSession();
     global.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   /* ---------------- 结算 ---------------- */
 
-  function finish() {
+  function finish(options) {
+    if (state.finished) return;             // 防重复结算
+    var skipHistory = !!(options && options.skipHistory);
+    state.finished = true;
+    clearSession();
+
     var total = state.list.length;
     var correct = state.marks.filter(function (m) { return m && m.correct; }).length;
     var wrong = total - correct;
@@ -307,19 +401,22 @@
     });
 
     el.redoWrong.hidden = wrong === 0;
+    updateHead();   // 顶部进度同步为最终成绩（恢复结算时也能对上）
 
     // 落盘：练习历史（供统计模块使用）
-    global.Store.update(HISTORY_KEY, [], function (list) {
-      list.push({
-        at: Date.now(),
-        total: total,
-        correct: correct,
-        rate: rate,
-        mode: state.mode || 'all',
-        durationMs: durationMs
+    if (!skipHistory) {
+      global.Store.update(HISTORY_KEY, [], function (list) {
+        list.push({
+          at: Date.now(),
+          total: total,
+          correct: correct,
+          rate: rate,
+          mode: state.mode || 'all',
+          durationMs: durationMs
+        });
+        return list.slice(-100); // 只保留最近 100 次
       });
-      return list.slice(-100); // 只保留最近 100 次
-    });
+    }
 
     global.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -410,16 +507,16 @@
       }
       bindEvents();
 
-      // 首次进入自动开一组；中途离开再回来保留当前题目
+      // 首次进入：优先恢复上次题组，否则开新一组；已完成则保持成绩页
       Router.onEnter('practice', function () {
         if (!state.started) {
-          startAll();
-        } else if (!state.locked && !el.summary.hidden) {
-          // 已完成状态，保持成绩面板
+          var saved = loadSession();
+          if (saved) restoreSession(saved);
+          else startAll();
           return;
-        } else {
-          updateHead();
         }
+        if (state.finished || !el.summary.hidden) return;
+        updateHead();
       });
     }
   };

@@ -12,6 +12,8 @@
   'use strict';
 
   var STORAGE_KEY = 'words:progress';
+  var SESSION_KEY = 'words:session';   // 本轮队列快照（刷新后续做）
+  var SESSION_TTL = 3 * 24 * 60 * 60 * 1000; // 超过 3 天的旧进度直接丢弃
   var LEVEL_MAX = 3;
 
   /** 运行期状态（刷新后重建，队列不落盘） */
@@ -87,6 +89,49 @@
     return newLevel;
   }
 
+  /* ---------------- 本轮会话（刷新续做） ---------------- */
+
+  function saveSession() {
+    if (!state.started) return;
+    global.Store.set(SESSION_KEY, {
+      filter: state.filter,
+      queue: state.queue,
+      total: state.total,
+      passed: state.passed,
+      savedAt: Date.now()
+    });
+  }
+
+  function clearSession() {
+    global.Store.remove(SESSION_KEY);
+  }
+
+  /** 读取并校验上次的本轮进度；无效 / 过期返回 null */
+  function loadSession() {
+    var saved = global.Store.get(SESSION_KEY, null);
+    if (!saved || !Array.isArray(saved.queue) || !saved.savedAt) return null;
+
+    if (Date.now() - saved.savedAt > SESSION_TTL) {
+      clearSession();
+      return null;
+    }
+
+    // 词库可能已变动：剔除不存在的单词，并同步修正总数
+    var queue = saved.queue.filter(function (id) { return !!findWord(id); });
+    var dropped = saved.queue.length - queue.length;
+    if (!queue.length) {
+      clearSession();
+      return null;
+    }
+
+    return {
+      filter: saved.filter || 'all',
+      queue: queue,
+      total: Math.max(queue.length, (saved.total || 0) - dropped),
+      passed: saved.passed || 0
+    };
+  }
+
   /* ---------------- 队列 ---------------- */
 
   /**
@@ -107,6 +152,8 @@
     state.total = list.length;
     state.passed = 0;
     state.started = true;
+
+    saveSession();
   }
 
   function startRound(onlyUnmastered) {
@@ -163,7 +210,8 @@
     var word = currentWord();
 
     if (!word) {
-      // 队列耗尽：本轮完成
+      // 队列耗尽：本轮完成（清掉会话，下次进来重新开一轮）
+      clearSession();
       el.card.hidden = true;
       el.actions.hidden = true;
       el.done.hidden = false;
@@ -216,7 +264,14 @@
       state.queue.push(state.queue.shift()); // 模糊 / 不认识：移到队尾
     }
 
+    saveSession();
     render();
+  }
+
+  function syncFilterChips() {
+    Array.prototype.forEach.call(el.chips, function (chip) {
+      chip.classList.toggle('is-active', chip.getAttribute('data-filter') === state.filter);
+    });
   }
 
   function setFilter(filter) {
@@ -234,6 +289,7 @@
     var ok = global.confirm('确定清空单词熟悉度记录吗？此操作不可撤销。');
     if (!ok) return;
     global.Store.remove(STORAGE_KEY);
+    clearSession();
     startRound(false);
   }
 
@@ -318,12 +374,24 @@
       }
       bindEvents();
 
-      // 首次进入页面时开始本轮；再次进入保留当前进度
+      // 首次进入页面：优先恢复上次的本轮进度，否则开新一轮
       Router.onEnter('words', function () {
-        if (!state.started) {
-          startRound(false);
-        } else {
+        if (state.started) {
           render();
+          return;
+        }
+
+        var saved = loadSession();
+        if (saved) {
+          state.filter = saved.filter;
+          state.queue = saved.queue;
+          state.total = saved.total;
+          state.passed = saved.passed;
+          state.started = true;
+          syncFilterChips();
+          render();
+        } else {
+          startRound(false);
         }
       });
     }
